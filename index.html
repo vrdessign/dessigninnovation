@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dessign Innovation — Extended Reality & AI Systems</title>
+<meta name="description" content="Dessign Innovation — Extended Reality, Intelligenza Artificiale e Design per aziende, scuole e territori. Sardegna, Italia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050C18;--bg2:#080F20;--bg3:#0D1A30;--card:#0F1F38;
+  --blue:#2563EB;--sky:#38BDF8;--amber:#F59E0B;--amberL:#FCD34D;
+  --white:#F8FAFC;--mid:#94A3B8;--dim:#475569;
+  --border:rgba(37,99,235,0.18);--borderA:rgba(245,158,11,0.22);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--bg);color:var(--white);font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;overflow-x:hidden;}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;line-height:1.15;}
+
+/* CANVAS */
+#gc{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.28;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 2.5rem;height:68px;background:rgba(5,12,24,0.90);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);transition:background .3s;}
+.logo{display:flex;align-items:center;cursor:pointer;}
+.logo img{height:36px;width:auto;object-fit:contain;filter:brightness(1);}
+.nav-links{display:flex;gap:.2rem;list-style:none;}
+.nav-links button{background:none;border:none;cursor:pointer;color:var(--mid);font-size:.85rem;font-weight:500;font-family:'Inter',sans-serif;padding:.4rem .75rem;border-radius:6px;transition:color .2s,background .2s;}
+.nav-links button:hover{color:var(--white);background:rgba(255,255,255,0.06);}
+.nav-links button.ai-btn{color:var(--amber);}
+.nav-links button.ai-btn:hover{background:rgba(245,158,11,0.1);}
+.nav-cta{background:var(--blue)!important;color:#fff!important;padding:.4rem 1rem!important;border-radius:6px!important;}
+.nav-cta:hover{background:#1d4ed8!important;color:#fff!important;}
+.hbg{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px;background:none;border:none;}
+.hbg span{display:block;width:22px;height:2px;background:var(--white);border-radius:2px;}
+
+/* SECTIONS */
+.sec{position:relative;z-index:1;padding:6rem 2rem;}
+.sec-alt{background:var(--bg2);}
+.sec-dark{background:var(--bg3);}
+.sec-ai{background:var(--bg);border-top:1px solid var(--borderA);border-bottom:1px solid var(--borderA);}
+.container{max-width:1100px;margin:0 auto;}
+.sec-label{font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.18em;color:var(--blue);text-transform:uppercase;margin-bottom:.75rem;}
+.sec-label.amb{color:var(--amber);}
+.sec-hdr{margin-bottom:3rem;}
+.sec-hdr h2{font-size:clamp(1.8rem,4vw,2.8rem);font-weight:700;letter-spacing:-.02em;}
+.sec-hdr p{color:var(--mid);margin-top:.75rem;font-size:1rem;max-width:600px;}
+.dvd{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 2rem;position:relative;z-index:1;}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:.5rem;padding:.75rem 1.75rem;border-radius:8px;font-weight:600;font-size:.9rem;text-decoration:none;transition:.2s;cursor:pointer;border:none;font-family:'Inter',sans-serif;}
+.btn-blue{background:var(--blue);color:#fff;}
+.btn-blue:hover{background:#1d4ed8;transform:translateY(-1px);}
+.btn-out{background:transparent;color:var(--white);border:1px solid var(--border);}
+.btn-out:hover{border-color:var(--sky);color:var(--sky);transform:translateY(-1px);}
+.btn-amb{background:var(--amber);color:#000;}
+.btn-amb:hover{background:var(--amberL);transform:translateY(-1px);}
+.btn-amb-out{background:transparent;color:var(--amber);border:1px solid var(--borderA);}
+.btn-amb-out:hover{background:rgba(245,158,11,0.08);transform:translateY(-1px);}
+.btn-gh{background:rgba(255,255,255,.06);color:var(--white);border:1px solid rgba(255,255,255,.12);}
+.btn-gh:hover{background:rgba(255,255,255,.1);transform:translateY(-1px);}
+
+/* HERO */
+#hero{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:100px 2rem 4rem;}
+.eyebrow{display:inline-flex;align-items:center;gap:.5rem;background:rgba(37,99,235,.1);border:1px solid rgba(37,99,235,.3);border-radius:100px;padding:.35rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.72rem;color:var(--sky);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1.75rem;}
+.eyebrow::before{content:'';width:6px;height:6px;background:var(--sky);border-radius:50%;animation:pd 2s ease-in-out infinite;}
+@keyframes pd{0%,100%{opacity:1;transform:scale(1);}50%{opacity:.4;transform:scale(.7);}}
+.hero-h1{font-size:clamp(2.8rem,7vw,5.5rem);font-weight:700;line-height:1.05;letter-spacing:-.02em;max-width:900px;margin-bottom:1.25rem;}
+.hero-h1 .bl{color:var(--blue);}
+.hero-h1 .sk{color:var(--sky);}
+.hero-sub{font-size:clamp(1rem,2vw,1.18rem);color:var(--mid);max-width:620px;margin-bottom:2.5rem;}
+.hero-acts{display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;margin-bottom:4rem;}
+.stats-bar{display:flex;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:rgba(13,26,48,.6);backdrop-filter:blur(8px);}
+.stat{padding:1rem 2rem;text-align:center;border-right:1px solid var(--border);}
+.stat:last-child{border-right:none;}
+.stat-v{font-family:'Space Grotesk',sans-serif;font-size:1.6rem;font-weight:700;line-height:1;margin-bottom:.25rem;}
+.stat-v .bl{color:var(--blue);}
+.stat-v .sk{color:var(--sky);}
+.stat-v .am{color:var(--amber);}
+.stat-l{font-size:.72rem;color:var(--mid);white-space:nowrap;}
+
+/* XR CARDS */
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem;}
+.grid-2{display:grid;grid-template-columns:repeat(2,1fr);gap:1.25rem;}
+.xr-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;transition:.2s;position:relative;overflow:hidden;}
+.xr-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,var(--blue),var(--sky));opacity:0;transition:opacity .3s;}
+.xr-card:hover{border-color:rgba(37,99,235,.4);transform:translateY(-3px);}
+.xr-card:hover::before{opacity:1;}
+.xr-icon{width:48px;height:48px;background:rgba(37,99,235,.12);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:1.25rem;font-size:1.4rem;}
+.xr-card h3{font-size:1.1rem;font-weight:600;margin-bottom:.6rem;}
+.xr-card p{color:var(--mid);font-size:.88rem;line-height:1.6;}
+.tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1.2rem;}
+.tag{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--sky);border:1px solid rgba(56,189,248,.25);border-radius:4px;padding:.15rem .5rem;}
+
+/* ── AI SECTION — SNELLA ───────────────────────────────── */
+.ai-layout{display:grid;grid-template-columns:1fr 420px;gap:4rem;align-items:center;}
+
+.ai-tagline{
+  font-size:clamp(1.6rem,3vw,2.2rem);
+  font-weight:700;
+  letter-spacing:-.02em;
+  line-height:1.2;
+  margin-bottom:1.25rem;
+}
+.ai-tagline span{color:var(--amber);}
+
+.ai-pitch{
+  font-size:1rem;
+  color:var(--mid);
+  line-height:1.7;
+  margin-bottom:2rem;
+  max-width:520px;
+}
+
+/* 3 pillars */
+.ai-pillars{display:flex;flex-direction:column;gap:.75rem;margin-bottom:2.25rem;}
+.pillar{
+  display:flex;align-items:center;gap:1rem;
+  background:rgba(245,158,11,.05);
+  border:1px solid var(--borderA);
+  border-radius:10px;
+  padding:.9rem 1.25rem;
+}
+.pillar-icon{font-size:1.3rem;flex-shrink:0;}
+.pillar-text{font-size:.9rem;}
+.pillar-text strong{color:var(--white);display:block;margin-bottom:.1rem;}
+.pillar-text span{color:var(--mid);font-size:.82rem;}
+
+.ai-btns{display:flex;gap:.75rem;flex-wrap:wrap;}
+
+/* Right side: metrics + compliance */
+.ai-right{display:flex;flex-direction:column;gap:1.5rem;}
+
+.ai-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:.75rem;}
+.ai-metric{
+  background:rgba(245,158,11,.06);
+  border:1px solid var(--borderA);
+  border-radius:10px;
+  padding:1.25rem;
+  text-align:center;
+}
+.ai-mv{font-family:'Space Grotesk',sans-serif;font-size:2rem;font-weight:700;color:var(--amber);line-height:1;margin-bottom:.3rem;}
+.ai-ml{font-size:.75rem;color:var(--mid);}
+
+.compliance-box{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:12px;
+  padding:1.5rem;
+}
+.compliance-box h4{font-size:.8rem;color:var(--dim);letter-spacing:.1em;text-transform:uppercase;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;}
+.compliance-badges{display:flex;flex-direction:column;gap:.6rem;}
+.cbadge{
+  display:flex;align-items:center;gap:.75rem;
+  padding:.6rem .75rem;
+  background:rgba(37,99,235,.06);
+  border:1px solid var(--border);
+  border-radius:8px;
+  font-size:.82rem;
+}
+.cbadge-dot{width:8px;height:8px;background:var(--sky);border-radius:50%;flex-shrink:0;}
+.cbadge-name{color:var(--white);font-weight:600;min-width:80px;}
+.cbadge-desc{color:var(--mid);font-size:.78rem;}
+
+.wp-links{display:flex;flex-direction:column;gap:.5rem;}
+.wp-link{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:.6rem .9rem;
+  background:rgba(245,158,11,.04);
+  border:1px solid var(--borderA);
+  border-radius:8px;
+  text-decoration:none;
+  transition:.2s;
+}
+.wp-link:hover{background:rgba(245,158,11,.08);}
+.wp-link-title{font-size:.82rem;color:var(--white);font-weight:500;}
+.wp-link-doi{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--amber);}
+
+/* ARCH CARDS */
+.arch-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:2rem;transition:.2s;}
+.arch-card:hover{border-color:rgba(56,189,248,.3);transform:translateY(-2px);}
+.arch-card h3{font-size:1.05rem;margin-bottom:.6rem;}
+.arch-card p{color:var(--mid);font-size:.88rem;line-height:1.6;}
+.arch-list{list-style:none;margin-top:1rem;}
+.arch-list li{font-size:.82rem;color:var(--mid);padding:.3rem 0;display:flex;align-items:center;gap:.5rem;}
+.arch-list li::before{content:'→';color:var(--sky);font-size:.75rem;}
+
+/* STEM */
+.stem-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2.5rem;}
+.stem-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:1.5rem 1rem;text-align:center;transition:.2s;}
+.stem-card:hover{border-color:rgba(37,99,235,.4);transform:translateY(-2px);}
+.stem-icon{font-size:1.8rem;margin-bottom:.75rem;}
+.stem-card h4{font-size:.9rem;font-weight:600;}
+.stem-card p{font-size:.78rem;color:var(--mid);margin-top:.3rem;}
+
+/* PARTNERS */
+.partners-row{display:flex;justify-content:center;flex-wrap:wrap;gap:.75rem;}
+.partner-badge{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.6rem 1.25rem;font-size:.8rem;color:var(--mid);font-weight:500;transition:.2s;}
+.partner-badge:hover{border-color:var(--sky);color:var(--sky);}
+.partners-lbl{text-align:center;font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--dim);letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;}
+
+/* CONTACT */
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start;}
+.cdet{display:flex;align-items:center;gap:.75rem;padding:.75rem 0;border-bottom:1px solid rgba(255,255,255,.06);}
+.cdet:last-of-type{border-bottom:none;}
+.cdet-ic{width:36px;height:36px;background:rgba(37,99,235,.1);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.cdet-l{font-size:.7rem;color:var(--dim);margin-bottom:.1rem;}
+.cdet-v{color:var(--white);font-weight:500;}
+.cdet-v a{color:var(--sky);text-decoration:none;}
+.cdet-v a:hover{text-decoration:underline;}
+.cform{display:flex;flex-direction:column;gap:1rem;}
+.fg{display:flex;flex-direction:column;gap:.4rem;}
+.fl{font-size:.8rem;color:var(--mid);font-weight:500;}
+.fi,.ft,.fsel{background:var(--card);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;color:var(--white);font-family:'Inter',sans-serif;font-size:.88rem;transition:border-color .2s;width:100%;}
+.fi:focus,.ft:focus,.fsel:focus{outline:none;border-color:var(--blue);}
+.ft{resize:vertical;min-height:120px;}
+.fsel{cursor:pointer;}
+.fsel option{background:var(--card);color:var(--white);}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:1rem;}
+
+/* FOOTER */
+footer{position:relative;z-index:1;background:var(--bg);border-top:1px solid var(--border);padding:1.75rem 2rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;}
+.fc{font-size:.78rem;color:var(--dim);}
+.flinks{display:flex;gap:1.5rem;}
+.flinks button{background:none;border:none;cursor:pointer;font-size:.78rem;color:var(--dim);font-family:'Inter',sans-serif;transition:.2s;}
+.flinks button:hover{color:var(--sky);}
+.fdoi{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--amber);text-decoration:none;}
+.fdoi:hover{text-decoration:underline;}
+
+/* FADE IN */
+.fi-anim{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.fi-anim.vis{opacity:1;transform:translateY(0);}
+
+/* TOAST */
+#toast{position:fixed;bottom:2rem;right:2rem;background:var(--card);border:1px solid var(--borderA);border-radius:10px;padding:.9rem 1.25rem;font-size:.85rem;color:var(--amber);z-index:200;transform:translateY(100px);opacity:0;transition:.4s;}
+#toast.show{transform:translateY(0);opacity:1;}
+
+/* MOBILE */
+@media(max-width:900px){
+  nav{padding:0 1.25rem;}
+  .nav-links{display:none;}
+  .nav-links.open{display:flex;flex-direction:column;position:fixed;top:68px;left:0;right:0;background:var(--bg2);border-bottom:1px solid var(--border);padding:1rem;gap:.25rem;}
+  .hbg{display:flex;}
+  .stats-bar{flex-direction:column;width:100%;max-width:320px;}
+  .stat{border-right:none;border-bottom:1px solid var(--border);}
+  .stat:last-child{border-bottom:none;}
+  .grid-3,.grid-2{grid-template-columns:1fr;}
+  .ai-layout{grid-template-columns:1fr;}
+  .ai-metrics{grid-template-columns:repeat(2,1fr);}
+  .stem-grid{grid-template-columns:repeat(2,1fr);}
+  .contact-layout{grid-template-columns:1fr;}
+  .frow{grid-template-columns:1fr;}
+  footer{flex-direction:column;text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<canvas id="gc"></canvas>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="logo" onclick="go('hero')">
+    <img src="https://static.wixstatic.com/media/dcfe46_5f505c2a6f294a6e9c0796612eb82177~mv2.png"
+         alt="Dessign Innovation"
+         onerror="this.style.display='none';document.getElementById('logo-fallback').style.display='flex';">
+    <span id="logo-fallback" style="display:none;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.1rem;color:var(--white);">DESSIGN<span style="color:var(--blue);">.</span>innovation</span>
+  </div>
+  <ul class="nav-links" id="nl">
+    <li><button onclick="go('xr');closeMenu()">XR System</button></li>
+    <li><button class="ai-btn" onclick="go('ai');closeMenu()">⬡ Portale Scuola AI</button></li>
+    <li><button onclick="go('arch');closeMenu()">Architettura</button></li>
+    <li><button onclick="go('scuola');closeMenu()">Scuola</button></li>
+    <li><button class="nav-cta" onclick="go('contact');closeMenu()">Contatti</button></li>
+  </ul>
+  <button class="hbg" id="hbg" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section id="hero" class="sec" style="min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding-top:100px;">
+  <div class="eyebrow fi-anim">Dessign Innovation — Sardegna, Italia</div>
+  <h1 class="hero-h1 fi-anim">
+    <span class="bl">Extended Reality</span><br>
+    &amp; <span class="sk">Intelligenza Artificiale</span><br>
+    per il futuro
+  </h1>
+  <p class="hero-sub fi-anim">
+    Sistemi XR, AI sovrana e design per aziende, scuole e territori.<br>
+    Dal mondo fisico al digitale — con tecnologia che funziona davvero.
+  </p>
+  <div class="hero-acts fi-anim">
+    <button class="btn btn-blue" onclick="go('xr')">Scopri i servizi</button>
+    <button class="btn btn-amb" onclick="go('ai')">⬡ Portale Scuola AI</button>
+    <button class="btn btn-out" onclick="go('contact')">Contattaci</button>
+  </div>
+  <div class="stats-bar fi-anim">
+    <div class="stat"><div class="stat-v"><span class="bl">10+</span></div><div class="stat-l">Anni esperienza XR</div></div>
+    <div class="stat"><div class="stat-v"><span class="sk">90M+</span></div><div class="stat-l">Studenti target AI</div></div>
+    <div class="stat"><div class="stat-v"><span class="am">3</span></div><div class="stat-l">DOI Zenodo pubblicati</div></div>
+    <div class="stat"><div class="stat-v"><span class="bl">22</span></div><div class="stat-l">Paesi Lega Araba</div></div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<!-- XR -->
+<section id="xr" class="sec sec-alt">
+  <div class="container">
+    <div class="sec-hdr fi-anim">
+      <div class="sec-label">XR System</div>
+      <h2>Extended Reality per le aziende</h2>
+      <p>VR, AR e MR per formazione, progettazione e comunicazione. Tecnologie immersive che creano valore misurabile.</p>
+    </div>
+    <div class="grid-3">
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">🥽</div>
+        <h3>Realtà Virtuale (VR)</h3>
+        <p>Esperienze immersive per formazione, simulazioni di processo, tour 360° e presentazioni ad alto impatto.</p>
+        <div class="tags"><span class="tag">Meta Quest</span><span class="tag">Pico</span><span class="tag">HTC Vive</span><span class="tag">WebVR</span></div>
+      </div>
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">📱</div>
+        <h3>Realtà Aumentata (AR)</h3>
+        <p>Overlay digitali sul mondo fisico per manutenzione assistita, marketing esperienziale e formazione in contesto reale.</p>
+        <div class="tags"><span class="tag">ARKit/ARCore</span><span class="tag">XREAL</span><span class="tag">WebAR</span><span class="tag">MindAR</span></div>
+      </div>
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">🌐</div>
+        <h3>Realtà Mista (MR)</h3>
+        <p>Fusione di fisico e digitale per ambienti collaborativi avanzati e telepresenza immersiva per team distribuiti.</p>
+        <div class="tags"><span class="tag">HoloLens</span><span class="tag">Unity</span><span class="tag">Unreal Engine 5</span></div>
+      </div>
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">📡</div>
+        <h3>Digital Twin & LiDAR</h3>
+        <p>Gemelli digitali di edifici e spazi industriali via scansioni LiDAR 3D. Navigazione remota e analisi strutturale.</p>
+        <div class="tags"><span class="tag">LiDAR</span><span class="tag">Point Cloud</span><span class="tag">BIM</span><span class="tag">Three.js</span></div>
+      </div>
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">🎥</div>
+        <h3>Virtual Production</h3>
+        <p>LED Wall e produzione virtuale per video, broadcast e cinema con scenari in real-time su Unreal Engine 5.</p>
+        <div class="tags"><span class="tag">LED Wall</span><span class="tag">Unreal 5</span><span class="tag">In-camera VFX</span></div>
+      </div>
+      <div class="xr-card fi-anim">
+        <div class="xr-icon">🏛️</div>
+        <h3>Cultural Heritage XR</h3>
+        <p>Valorizzazione del patrimonio culturale con tour virtuali di siti storici e storytelling interattivo per musei.</p>
+        <div class="tags"><span class="tag">Museo virtuale</span><span class="tag">UNESCO</span><span class="tag">INTERREG</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<!-- AI — VERSIONE SNELLA -->
+<section id="ai" class="sec sec-ai">
+  <div class="container">
+    <div class="ai-layout">
+
+      <!-- Left: positioning -->
+      <div class="fi-anim">
+        <div class="sec-label amb">Intelligenza Artificiale Sovrana</div>
+        <h2 class="ai-tagline">
+          La scuola italiana<br>merita un'<span>AI</span><br>progettata per lei.
+        </h2>
+        <p class="ai-pitch">
+          Portale Scuola AI è la prima piattaforma SaaS nata dentro il sistema scolastico italiano —
+          non adattata, ma costruita attorno alle Linee Guida MIM 2025, all'AI Act UE e al GDPR.
+          Disponibile anche per Spagna, Portogallo, Grecia e 22 paesi del mondo arabo.
+        </p>
+
+        <div class="ai-pillars">
+          <div class="pillar">
+            <div class="pillar-icon">🎯</div>
+            <div class="pillar-text">
+              <strong>Allineato ai programmi ministeriali</strong>
+              <span>Le risposte AI seguono i curricola MIM e i libri di testo adottati dall'istituto — non fonti generiche.</span>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🔒</div>
+            <div class="pillar-text">
+              <strong>Dati degli studenti al sicuro</strong>
+              <span>Deploy sovrano su infrastruttura locale. Zero invio di dati a server esterni. Privacy by design per i minori.</span>
+            </div>
+          </div>
+          <div class="pillar">
+            <div class="pillar-icon">🌍</div>
+            <div class="pillar-text">
+              <strong>Scala da una scuola a 90 milioni di studenti</strong>
+              <span>Architettura replicabile in qualsiasi sistema scolastico nazionale. Partnership con Core42 (UAE) e HUMAIN/NVIDIA (KSA).</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ai-btns">
+          <a class="btn btn-amb" href="https://doi.org/10.5281/zenodo.20826793" target="_blank" rel="noopener">📄 White Paper EN</a>
+          <a class="btn btn-amb-out" href="https://doi.org/10.5281/zenodo.20828676" target="_blank" rel="noopener">📄 White Paper IT</a>
+          <a class="btn btn-gh" href="https://github.com/vrdessign/portale-scuola-ai" target="_blank" rel="noopener">⌥ GitHub</a>
+        </div>
+      </div>
+
+      <!-- Right: metrics + compliance -->
+      <div class="ai-right fi-anim">
+        <div class="ai-metrics">
+          <div class="ai-metric"><div class="ai-mv">10,4M</div><div class="ai-ml">Studenti in Italia</div></div>
+          <div class="ai-metric"><div class="ai-mv">90M+</div><div class="ai-ml">Studenti arabi</div></div>
+          <div class="ai-metric"><div class="ai-mv">€ 366M</div><div class="ai-ml">Potenziale UE Sud/anno</div></div>
+          <div class="ai-metric"><div class="ai-mv">75%+</div><div class="ai-ml">EBITDA a scala</div></div>
+        </div>
+
+        <div class="compliance-box">
+          <h4>Conformità normativa nativa</h4>
+          <div class="compliance-badges">
+            <div class="cbadge">
+              <div class="cbadge-dot"></div>
+              <span class="cbadge-name">MIM 2025</span>
+              <span class="cbadge-desc">Linee Guida AI per le scuole italiane — 5 fasi complete</span>
+            </div>
+            <div class="cbadge">
+              <div class="cbadge-dot"></div>
+              <span class="cbadge-name">AI Act UE</span>
+              <span class="cbadge-desc">Classificazione rischio limitato — Art. 50 watermark nativo</span>
+            </div>
+            <div class="cbadge">
+              <div class="cbadge-dot"></div>
+              <span class="cbadge-name">GDPR</span>
+              <span class="cbadge-desc">DPIA wizard integrato — consenso genitori under 14</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="wp-links">
+          <a class="wp-link" href="https://doi.org/10.5281/zenodo.20826793" target="_blank" rel="noopener">
+            <span class="wp-link-title">📄 EduRAG White Paper (EN)</span>
+            <span class="wp-link-doi">10.5281/zenodo.20826793</span>
+          </a>
+          <a class="wp-link" href="https://doi.org/10.5281/zenodo.20828676" target="_blank" rel="noopener">
+            <span class="wp-link-title">📄 Portale Scuola AI White Paper (IT)</span>
+            <span class="wp-link-doi">10.5281/zenodo.20828676</span>
+          </a>
+          <a class="wp-link" href="https://doi.org/10.5281/zenodo.20827996" target="_blank" rel="noopener">
+            <span class="wp-link-title">⌥ Codice sorgente v2.0.0</span>
+            <span class="wp-link-doi">10.5281/zenodo.20827996</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<!-- ARCH -->
+<section id="arch" class="sec sec-alt">
+  <div class="container">
+    <div class="sec-hdr fi-anim">
+      <div class="sec-label">Architettura & Design</div>
+      <h2>Spazi fisici e digitali<br>che dialogano</h2>
+      <p>VR e AR al servizio dell'architettura: dalla progettazione alla consegna, ogni fase diventa immersiva.</p>
+    </div>
+    <div class="grid-2">
+      <div class="arch-card fi-anim">
+        <h3>🏗️ BIM & Digital Twin</h3>
+        <p>Integrazione di modelli BIM con gemelli digitali navigabili in VR. Revisione in tempo reale e coordinamento multidisciplinare.</p>
+        <ul class="arch-list">
+          <li>Scansione LiDAR ad alta precisione</li>
+          <li>Point cloud → modello 3D navigabile</li>
+          <li>Navigazione VR del cantiere</li>
+          <li>Clash detection immersiva</li>
+        </ul>
+      </div>
+      <div class="arch-card fi-anim">
+        <h3>🎨 3D Design & Rendering</h3>
+        <p>Render fotorealistici e animazioni architetturali per presentazioni, concorsi pubblici e documentazione di progetto.</p>
+        <ul class="arch-list">
+          <li>Render real-time (Unreal Engine 5)</li>
+          <li>Walkthrough interattivi</li>
+          <li>Configuratori di materiali in VR</li>
+          <li>Tour 360° navigabili</li>
+        </ul>
+      </div>
+      <div class="arch-card fi-anim">
+        <h3>🌊 Tour Virtuali 360°</h3>
+        <p>Tour fotografici 360° per hotel, musei, immobili e luoghi culturali. Web, mobile e VR headset.</p>
+        <ul class="arch-list">
+          <li>Fotografia 360° professionale</li>
+          <li>Hotspot informativi interattivi</li>
+          <li>Pubblicazione web immediata</li>
+          <li>Compatibile con tutti i visori</li>
+        </ul>
+      </div>
+      <div class="arch-card fi-anim">
+        <h3>📐 Product Design & Prototipazione</h3>
+        <p>Design industriale e prototipazione rapida. CAD 3D, stampa 3D FDM e resina, supporto brevettazione dal 2016.</p>
+        <ul class="arch-list">
+          <li>Progettazione CAD 3D professionale</li>
+          <li>Stampa 3D FDM e resina</li>
+          <li>Supporto iter brevettuale</li>
+          <li>Prototipi funzionali certificabili</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<!-- SCUOLA -->
+<section id="scuola" class="sec sec-dark">
+  <div class="container">
+    <div class="sec-hdr fi-anim">
+      <div class="sec-label">Scuola Innovativa</div>
+      <h2>Tecnologia al servizio<br>dell'apprendimento</h2>
+      <p>XR e AI per trasformare l'esperienza didattica nelle scuole italiane ed europee.</p>
+    </div>
+    <div class="stem-grid">
+      <div class="stem-card fi-anim"><div class="stem-icon">🔬</div><h4>Scienze</h4><p>Laboratori virtuali, molecole 3D e simulazioni biologiche immersive</p></div>
+      <div class="stem-card fi-anim"><div class="stem-icon">⚙️</div><h4>Tecnologia</h4><p>Simulazioni di processo, assemblaggio virtuale e CAD didattico</p></div>
+      <div class="stem-card fi-anim"><div class="stem-icon">🏗️</div><h4>Ingegneria</h4><p>Fisica applicata, strutture e progettazione in ambiente virtuale</p></div>
+      <div class="stem-card fi-anim"><div class="stem-icon">📐</div><h4>Matematica</h4><p>Geometria 3D esplorabile e visualizzazione di funzioni complesse</p></div>
+    </div>
+    <div class="fi-anim" style="text-align:center;margin-top:1rem;">
+      <p style="color:var(--mid);margin-bottom:1.25rem;font-size:.9rem;">Per la soluzione AI completa certificata MIM 2025:</p>
+      <button class="btn btn-amb" onclick="go('ai')">Scopri Portale Scuola AI →</button>
+    </div>
+  </div>
+</section>
+
+<!-- PARTNERS -->
+<section class="sec" style="padding:3rem 2rem;">
+  <div class="container">
+    <div class="partners-lbl fi-anim">Partner tecnologici e istituzionali</div>
+    <div class="partners-row fi-anim">
+      <div class="partner-badge">EuroXR</div>
+      <div class="partner-badge">CNR</div>
+      <div class="partner-badge">UNISS</div>
+      <div class="partner-badge">HUMAIN / NVIDIA</div>
+      <div class="partner-badge">Core42 / G42 UAE</div>
+      <div class="partner-badge">RC Rockefeller Entertainment</div>
+      <div class="partner-badge">MORE SRL</div>
+      <div class="partner-badge">Pico Europe ISV</div>
+    </div>
+  </div>
+</section>
+
+<div class="dvd"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="sec sec-alt">
+  <div class="container">
+    <div class="contact-layout">
+      <div class="fi-anim">
+        <div class="sec-label">Contatti</div>
+        <h2 style="font-size:2rem;margin-bottom:.75rem;">Iniziamo a<br>lavorare insieme</h2>
+        <p style="color:var(--mid);margin-bottom:2rem;font-size:.95rem;">Sei un'azienda, una scuola o un'istituzione interessata alle nostre soluzioni XR o AI? Rispondiamo entro 24 ore.</p>
+        <div class="cdet"><div class="cdet-ic">✉️</div><div><div class="cdet-l">Email</div><div class="cdet-v"><a href="mailto:cdessi@dessigninnovation.it">cdessi@dessigninnovation.it</a></div></div></div>
+        <div class="cdet"><div class="cdet-ic">📞</div><div><div class="cdet-l">Telefono</div><div class="cdet-v"><a href="tel:+393479854452">+39 347 985 4452</a></div></div></div>
+        <div class="cdet"><div class="cdet-ic">📍</div><div><div class="cdet-l">Sede</div><div class="cdet-v">Sardegna, Italia</div></div></div>
+        <div class="cdet"><div class="cdet-ic">⌥</div><div><div class="cdet-l">GitHub</div><div class="cdet-v"><a href="https://github.com/vrdessign" target="_blank" rel="noopener">github.com/vrdessign</a></div></div></div>
+        <div class="cdet"><div class="cdet-ic">⚖️</div><div><div class="cdet-l">P.IVA</div><div class="cdet-v">IT01250020953</div></div></div>
+      </div>
+      <div class="fi-anim">
+        <div class="cform">
+          <div class="frow">
+            <div class="fg"><label class="fl">Nome *</label><input class="fi" type="text" placeholder="Il tuo nome"></div>
+            <div class="fg"><label class="fl">Cognome *</label><input class="fi" type="text" placeholder="Il tuo cognome"></div>
+          </div>
+          <div class="fg"><label class="fl">Email *</label><input class="fi" type="email" placeholder="email@azienda.it"></div>
+          <div class="fg"><label class="fl">Organizzazione</label><input class="fi" type="text" placeholder="Azienda / Scuola / Ente"></div>
+          <div class="fg">
+            <label class="fl">Interesse principale</label>
+            <select class="fsel">
+              <option value="">Seleziona...</option>
+              <option>Extended Reality (VR / AR / MR)</option>
+              <option>Portale Scuola AI — EduRAG</option>
+              <option>Digital Twin & LiDAR</option>
+              <option>Architettura & Design</option>
+              <option>Virtual Production</option>
+              <option>Partnership / Investimento</option>
+              <option>Altro</option>
+            </select>
+          </div>
+          <div class="fg"><label class="fl">Messaggio *</label><textarea class="ft" placeholder="Descrivi il tuo progetto o la tua richiesta..."></textarea></div>
+          <button class="btn btn-blue" onclick="sendForm()" style="width:100%;justify-content:center;">Invia messaggio →</button>
+          <p style="font-size:.72rem;color:var(--dim);text-align:center;">I tuoi dati non vengono condivisi con terze parti.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="fc">© 2026 Dessign Innovation — Cristian Dessi · P.IVA IT01250020953 · Sardegna, Italia</div>
+  <div class="flinks">
+    <button onclick="go('xr')">XR System</button>
+    <button onclick="go('ai')">Portale Scuola AI</button>
+    <button onclick="go('arch')">Architettura</button>
+    <button onclick="go('contact')">Contatti</button>
+  </div>
+  <a class="fdoi" href="https://doi.org/10.5281/zenodo.20826793" target="_blank" rel="noopener">DOI: 10.5281/zenodo.20826793</a>
+</footer>
+
+<div id="toast">✓ Messaggio inviato — ti risponderemo entro 24 ore.</div>
+
+<script>
+function go(id){const el=document.getElementById(id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'});}
+function toggleMenu(){document.getElementById('nl').classList.toggle('open');}
+function closeMenu(){document.getElementById('nl').classList.remove('open');}
+function sendForm(){const t=document.getElementById('toast');t.classList.add('show');setTimeout(()=>t.classList.remove('show'),4000);}
+
+window.addEventListener('scroll',()=>{
+  const nav=document.getElementById('nav');
+  nav.style.background=window.scrollY>50?'rgba(5,12,24,.97)':'rgba(5,12,24,.90)';
+});
+
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('vis');});
+},{threshold:0.08});
+document.querySelectorAll('.fi-anim').forEach(el=>obs.observe(el));
+
+// Canvas
+const cv=document.getElementById('gc'),cx=cv.getContext('2d');
+let W,H,nodes=[];
+function resize(){
+  W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;
+  nodes=[];
+  const C=20,R=12,gx=W/C,gy=H/R;
+  for(let c=0;c<=C;c++)for(let r=0;r<=R;r++)
+    nodes.push({x:c*gx+(Math.random()-.5)*gx*.3,y:r*gy+(Math.random()-.5)*gy*.3,
+      ox:c*gx,oy:r*gy,vx:(Math.random()-.5)*.12,vy:(Math.random()-.5)*.12,
+      r:Math.random()*1.5+.5,p:Math.random()*Math.PI*2});
+}
+function draw(){
+  cx.clearRect(0,0,W,H);
+  nodes.forEach(n=>{n.x+=n.vx;n.y+=n.vy;n.p+=.018;
+    if(Math.hypot(n.x-n.ox,n.y-n.oy)>28){n.vx*=-1;n.vy*=-1;}});
+  for(let i=0;i<nodes.length;i++)for(let j=i+1;j<nodes.length;j++){
+    const a=nodes[i],b=nodes[j],d=Math.hypot(a.x-b.x,a.y-b.y);
+    if(d<110){cx.beginPath();cx.moveTo(a.x,a.y);cx.lineTo(b.x,b.y);
+      cx.strokeStyle=`rgba(37,99,235,${(1-d/110)*.12})`;cx.lineWidth=.5;cx.stroke();}
+  }
+  nodes.forEach(n=>{const g=(Math.sin(n.p)+1)/2;
+    cx.beginPath();cx.arc(n.x,n.y,n.r,0,Math.PI*2);
+    cx.fillStyle=`rgba(56,189,248,${.15+g*.25})`;cx.fill();});
+  requestAnimationFrame(draw);
+}
+window.addEventListener('resize',resize);
+resize();draw();
+</script>
+</body>
+</html>
